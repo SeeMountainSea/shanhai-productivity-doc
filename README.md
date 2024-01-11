@@ -21,3 +21,20 @@ https://github.com/TongchengOpenSource/smart-doc-maven-plugin
 
   支持修改模板文件内容（不支持修改模板定义名称），做自定义显示。
 
+#### 配置说明（smart-doc.json）
+
+```json
+{
+  "projectName": "Demo Project",
+  "allInOne": true,
+  "extTemplateEnable": true, //是否启用自定义模板 （shanhai-productivity-doc新增）
+  "extTemplateRootPath": "d:/SmartExtTemplate", //自定义模板储存根路径（shanhai-productivity-doc新增，从https://github.com/SeeMountainSea/shanhai-productivity-doc/tree/main/shanhai-productivitydoc/src/main/resources下载全部原模板文件）
+  "extTemplateVariableConfigPath":"d:/SmartExtTemplate/extVariable.json" //自定义模板扩展变量配置文件（shanhai-productivity-doc新增，JSON格式文件,可以自行配置新的变量写入模板文件）
+}
+```
+
+#### 注意事项
+
+SmartDoc原模板文件有的是unix编码 ，注意修改模板文件的时候建议使用notepad++这类文件编辑器打开编辑。
+
+不要使用其他编辑器编辑，否则会出现模板文件无法解析的情况。
