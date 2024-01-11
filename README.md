@@ -13,7 +13,7 @@ https://github.com/TongchengOpenSource/smart-doc-maven-plugin
 
 目前 山海生产力Doc 1.0 版本基于SmartDoc v3.0.1版本源码进行了局部扩展。
 
-为了方便使用，山海生产力Doc 更换了package name，除扩展功能外，其他配置与SmartDoc V3.1的配置参数相同。
+为了方便使用，山海生产力Doc 更换了package name，除扩展功能外，其他配置与SmartDoc v3.0.1的配置参数相同。
 
 #### 山海生产力Doc扩展能力
 
