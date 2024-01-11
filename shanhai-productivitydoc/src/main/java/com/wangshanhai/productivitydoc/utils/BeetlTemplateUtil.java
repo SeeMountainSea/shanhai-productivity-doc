@@ -20,18 +20,19 @@
  */
 package com.wangshanhai.productivitydoc.utils;
 
+import com.power.common.util.FileUtil;
+import com.wangshanhai.productivitydoc.constants.DocGlobalConstants;
+import org.beetl.core.Configuration;
+import org.beetl.core.GroupTemplate;
+import org.beetl.core.Template;
+import org.beetl.core.resource.ClasspathResourceLoader;
+import org.beetl.core.resource.FileResourceLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import com.power.common.util.FileUtil;
-
-import org.beetl.core.Configuration;
-import org.beetl.core.GroupTemplate;
-import org.beetl.core.Template;
-import org.beetl.core.resource.ClasspathResourceLoader;
 
 /**
  * Beetl template handle util
@@ -59,6 +60,23 @@ public class BeetlTemplateUtil {
         }
     }
 
+    /**
+     * Get Beetl template by file name
+     * @param templatePath template store path
+     * @param templateName template name
+     * @return
+     */
+    public static Template getByName(String templatePath,String templateName) {
+        try {
+            FileResourceLoader resourceLoader = new FileResourceLoader(templatePath+ DocGlobalConstants.FILE_SEPARATOR+"template"+DocGlobalConstants.FILE_SEPARATOR);
+            Configuration cfg = Configuration.defaultConfiguration();
+            cfg.add(new File(templatePath+ DocGlobalConstants.FILE_SEPARATOR+"smart-doc-beetl.properties"));
+            GroupTemplate gt = new GroupTemplate(resourceLoader, cfg);
+            return gt.getTemplate(templateName);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't get Beetl template.");
+        }
+    }
     /**
      * Batch bind binding value to Beetl templates and return all file rendered,
      * Map key is file name,value is file content

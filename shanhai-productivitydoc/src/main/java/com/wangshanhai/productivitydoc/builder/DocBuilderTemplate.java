@@ -23,6 +23,7 @@ package com.wangshanhai.productivitydoc.builder;
 import com.power.common.util.CollectionUtil;
 import com.power.common.util.DateTimeUtil;
 import com.power.common.util.FileUtil;
+import com.power.common.util.StringUtil;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.wangshanhai.productivitydoc.constants.*;
 import com.wangshanhai.productivitydoc.factory.BuildTemplateFactory;
@@ -30,12 +31,12 @@ import com.wangshanhai.productivitydoc.model.*;
 import com.wangshanhai.productivitydoc.template.IDocBuildTemplate;
 import com.wangshanhai.productivitydoc.utils.BeetlTemplateUtil;
 import com.wangshanhai.productivitydoc.utils.DocUtil;
+import com.wangshanhai.productivitydoc.utils.JsonUtil;
 import org.beetl.core.Template;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.*;
 
 /**
  * @author yu 2019/9/26.
@@ -125,7 +126,29 @@ public class DocBuilderTemplate extends BaseDocBuilderTemplate {
                                               String template, ApiDoc apiDoc, String index) {
         String strTime = DateTimeUtil.long2Str(now, DateTimeUtil.DATE_FORMAT_SECOND);
         List<ApiErrorCode> errorCodeList = DocUtil.errorCodeDictToList(config, javaProjectBuilder);
-        Template tpl = BeetlTemplateUtil.getByName(template);
+        //todo 模板和变量需要通过文件形式扩展支持自定义
+        Template tpl = null;
+        if(config.getExtTemplateEnable()){
+            tpl= BeetlTemplateUtil.getByName(config.getExtTemplateRootPath(),template);
+        }else{
+            tpl = BeetlTemplateUtil.getByName(template);
+        }
+        //todo 自定义扩展参数解析
+        if(!StringUtil.isEmpty(config.getExtTemplateVariableConfigPath())){
+           try{
+               String content=  FileUtil.getFileContent(Files.newInputStream(new File(config.getExtTemplateVariableConfigPath()).toPath()));
+               if(!StringUtil.isEmpty(content)){
+                   Map<String,Object> extVariableTmp= JsonUtil.toObject(content,Map.class);
+                   if(extVariableTmp!=null){
+                       for(String extVariableKey:extVariableTmp.keySet()){
+                           tpl.binding("ext_"+extVariableKey,extVariableTmp.get(extVariableKey));
+                       }
+                   }
+               }
+           }catch (Exception e){
+               e.printStackTrace();
+           }
+        }
         String style = config.getStyle();
         tpl.binding(TemplateVariable.STYLE.getVariable(), style);
         tpl.binding(TemplateVariable.HIGH_LIGHT_CSS_LINK.getVariable(), config.getHighlightStyleLink());

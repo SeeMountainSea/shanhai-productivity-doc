@@ -45,7 +45,18 @@ public class ApiConfig {
      * Web server base url
      */
     private String serverUrl;
-
+    /**
+     * 是否启用自定义模板
+     */
+    private Boolean extTemplateEnable=false;
+    /**
+     * 自定义模板存储路径（模板名称不可自定义）
+     */
+    private String extTemplateRootPath;
+    /**
+     * 自定义模板扩展变量配置文件（JSON格式文件）
+     */
+    private String extTemplateVariableConfigPath;
     /**
      * Web server base url for postman
      */
@@ -1021,5 +1032,29 @@ public class ApiConfig {
 
     public void setBaseDir(String baseDir) {
         this.baseDir = baseDir;
+    }
+
+    public Boolean getExtTemplateEnable() {
+        return extTemplateEnable;
+    }
+
+    public void setExtTemplateEnable(Boolean extTemplateEnable) {
+        this.extTemplateEnable = extTemplateEnable;
+    }
+
+    public String getExtTemplateRootPath() {
+        return extTemplateRootPath;
+    }
+
+    public void setExtTemplateRootPath(String extTemplateRootPath) {
+        this.extTemplateRootPath = extTemplateRootPath;
+    }
+
+    public String getExtTemplateVariableConfigPath() {
+        return extTemplateVariableConfigPath;
+    }
+
+    public void setExtTemplateVariableConfigPath(String extTemplateVariableConfigPath) {
+        this.extTemplateVariableConfigPath = extTemplateVariableConfigPath;
     }
 }
