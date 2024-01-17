@@ -5,11 +5,11 @@
     <parent>
         <artifactId>shanhai-productivitydoc-parent</artifactId>
         <groupId>com.wangshanhai.productivitydoc</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>shanhai-productivitydoc-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>maven-plugin</packaging>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>com.wangshanhai.productivitydoc</groupId>
             <artifactId>shanhai-productivitydoc</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 </project>

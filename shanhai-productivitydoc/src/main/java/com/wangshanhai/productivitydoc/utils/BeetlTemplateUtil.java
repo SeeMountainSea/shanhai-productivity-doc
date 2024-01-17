@@ -68,7 +68,7 @@ public class BeetlTemplateUtil {
      */
     public static Template getByName(String templatePath,String templateName) {
         try {
-            FileResourceLoader resourceLoader = new FileResourceLoader(templatePath+ DocGlobalConstants.FILE_SEPARATOR+"template"+DocGlobalConstants.FILE_SEPARATOR);
+            FileResourceLoader resourceLoader = new FileResourceLoader(templatePath+"/template/");
             Configuration cfg = Configuration.defaultConfiguration();
             cfg.add(new File(templatePath+ DocGlobalConstants.FILE_SEPARATOR+"smart-doc-beetl.properties"));
             GroupTemplate gt = new GroupTemplate(resourceLoader, cfg);

@@ -20,18 +20,19 @@
  */
 package com.wangshanhai.productivitydoc.builder;
 
+import com.power.common.util.DateTimeUtil;
+import com.power.common.util.FileUtil;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.wangshanhai.productivitydoc.constants.DocGlobalConstants;
 import com.wangshanhai.productivitydoc.factory.BuildTemplateFactory;
 import com.wangshanhai.productivitydoc.helper.JavaProjectBuilderHelper;
 import com.wangshanhai.productivitydoc.model.ApiConfig;
 import com.wangshanhai.productivitydoc.model.ApiDoc;
 import com.wangshanhai.productivitydoc.template.IDocBuildTemplate;
-import com.power.common.util.DateTimeUtil;
-import com.power.common.util.FileUtil;
-import com.thoughtworks.qdox.JavaProjectBuilder;
 import org.beetl.core.Template;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -84,18 +85,18 @@ public class WordDocBuilder {
             String outPath = config.getOutPath();
             FileUtil.mkdirs(outPath);
             Template tpl = builderTemplate.buildAllRenderDocTemplate(apiDocList, config, javaProjectBuilder, DocGlobalConstants.ALL_IN_ONE_WORD_XML_TPL, null, null);
-            copyAndReplaceDocx(tpl.render(), outPath + DocGlobalConstants.FILE_SEPARATOR + docName);
+            copyAndReplaceDocx(tpl.render(), outPath + DocGlobalConstants.FILE_SEPARATOR + docName,config);
         } else {
             FileUtil.mkdir(config.getOutPath());
             for (ApiDoc doc : apiDocList) {
                 Template template = builderTemplate.buildApiDocTemplate(doc, config, DocGlobalConstants.WORD_XML_TPL);
-                copyAndReplaceDocx(template.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + doc.getName() + BUILD_DOCX);
+                copyAndReplaceDocx(template.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + doc.getName() + BUILD_DOCX,config);
             }
             Template errorCodeDocTemplate = builderTemplate.buildErrorCodeDocTemplate(config, DocGlobalConstants.WORD_ERROR_XML_TPL, javaProjectBuilder);
-            copyAndReplaceDocx(errorCodeDocTemplate.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + BUILD_ERROR_DOCX);
+            copyAndReplaceDocx(errorCodeDocTemplate.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + BUILD_ERROR_DOCX,config);
 
             Template directoryDataDocTemplate = builderTemplate.buildDirectoryDataDocTemplate(config, javaProjectBuilder, DocGlobalConstants.WORD_DICT_XML_TPL);
-            copyAndReplaceDocx(directoryDataDocTemplate.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + BUILD_DICT_DOCX);
+            copyAndReplaceDocx(directoryDataDocTemplate.render(), config.getOutPath() + DocGlobalConstants.FILE_SEPARATOR + BUILD_DICT_DOCX,config);
         }
     }
 
@@ -107,8 +108,13 @@ public class WordDocBuilder {
      * @param docxOutputPath docx output path
      * @since 1.0.0
      */
-    public static void copyAndReplaceDocx(String content, String docxOutputPath) throws Exception {
-        InputStream resourceAsStream = WordDocBuilder.class.getClassLoader().getResourceAsStream(TEMPLATE_DOCX);
+    public static void copyAndReplaceDocx(String content, String docxOutputPath,ApiConfig config) throws Exception {
+        InputStream resourceAsStream =null;
+        if(config.getExtTemplateEnable()){
+            resourceAsStream= Files.newInputStream(new File(config.getExtTemplateRootPath() + "/template/word/template.docx").toPath());
+        }else {
+            resourceAsStream = WordDocBuilder.class.getClassLoader().getResourceAsStream(TEMPLATE_DOCX);
+        }
         Objects.requireNonNull(resourceAsStream, "word template docx is not found");
 
         ZipInputStream zipInputStream = new ZipInputStream(resourceAsStream);
@@ -117,14 +123,13 @@ public class WordDocBuilder {
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
             String entryName = entry.getName();
-
             if (entryName.equals("word/document.xml")) {
                 zipOutputStream.putNextEntry(new ZipEntry(entryName));
                 byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
                 zipOutputStream.write(bytes, 0, bytes.length);
             } else {
                 // copy
-                zipOutputStream.putNextEntry(entry);
+                zipOutputStream.putNextEntry(new ZipEntry(entryName));
                 byte[] buffer = new byte[1024];
                 int len;
                 while ((len = zipInputStream.read(buffer)) > 0) {

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wangshanhai.productivitydoc</groupId>
     <artifactId>shanhai-productivitydoc-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <modules>
         <module>shanhai-productivitydoc</module>
         <module>shanhai-productivitydoc-maven-plugin</module>
